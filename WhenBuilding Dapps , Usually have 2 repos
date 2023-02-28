@@ -1,0 +1,7 @@
+When Building Dapps, you usually have j2 repos
+
+-One for the smart contracts
+
+- one for the front end / website
+
+FULL STACK = Smart Contracts (backend) + Html / javascript / Website stuff (Front End)

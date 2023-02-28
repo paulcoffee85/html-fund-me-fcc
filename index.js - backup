@@ -1,0 +1,56 @@
+// in nodejs require()
+// IN FRONT-END JavaScript  you can't use require
+//  Import only!!!
+import {ethers} from "./ethers-5.7.esm.min.js"
+import {abi, contractAddress} from "./constants.js"
+
+const connectB = document.getElementById("connectB")
+const fundB = document.getElementById("fundB")
+//  Adding ONCLICKs in JS file because `type= 'module' `  instead of `text/javascript `  which codes in HTML file.
+connectB.onclick = connect
+fundB.onclick = fund
+// console.log(ethers)
+async function connect() {
+	if (typeof window.ethereum !== "undefined") {
+		await window.ethereum.request({method: "eth_requestAccounts"})
+		connectB.innerHTML = "Connected to MetaMask"
+	} else {
+		connectB.innerHTML = "Please install metamask!  "
+	}
+}
+/*PROVIDER	=>  A Provider (in ethers) is a class which provides an abstraction for a connection to the Ethereum Network.
+ It provides read-only access to the Blockchain and its status.	 
+
+ SIGNER =>   A Signer is a class which (usually) in some way directly or indirectly has access to a private key, 
+which can sign messages and transactions to authorize the network to charge your account ether to perform operations.	 
+
+Contract => 	A Contract is an abstraction which represents a connection to a specific contract on the Ethereum Network,
+ so that applications can use it like a normal JavaScript object. */
+
+async function fund() {
+	const ethAmount = "5"
+	console.log(`Funding with ${ethAmount} `)
+	if (typeof window.ethereum !== "undefined") {
+		// TO sends funds, we always need
+		// PROVIDER
+		// Connection to blockchain
+		// signer / wallet / someone with some gas
+		// Contract that we are interacting with
+		// ^ ABI & Address
+
+		const provider = new ethers.providers.Web3Provider(window.ethereum)
+		// const provider2 = new ethers.BrowserPRovider(window.ethereum)
+
+		const signer = provider.getSigner()
+		// this `log` will display which metamask address it's connected to
+		console.log(signer)
+
+		// Get contract by adding the ABI & ADDRESS
+
+		const contract = new ethers.Contract(contractAddress, abi, signer)
+		const transactionResponse = await contract.fund({
+			value: ethers.utils.parseEther(ethAmount)
+		})
+		console.log("FUNDS SENT")
+	}
+}
